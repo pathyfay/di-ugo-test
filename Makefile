@@ -3,8 +3,8 @@ SHELL = /bin/bash
 start:
 	npm install
 	npm run dev
-stop:
-	docker-compose down
-start_php:
-	php -S localhost:8080
+test:
+	npm run test
+build:
+	npm run build
 

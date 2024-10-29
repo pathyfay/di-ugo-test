@@ -4,7 +4,7 @@
 
 Une application forntend en React, qui va créez une application React qui affiche 2 Pages :
 ● La liste des customers
-● La liste des orders pour un utilisateurimporter des clients et des commandes à partir de fichiers CSV;
+● La liste des orders pour un utilisateur
 
 ### `npm install`
 
