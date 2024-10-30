@@ -40,6 +40,9 @@ h1 {
   line-height: 1.1;
 }
 
+.app-min-height{
+  min-height: 60vh;
+}
 .dark, .light, .dracula, .aqua, .synthwave, .cupcake, .pastel, .retro {
   width: 90%;
   margin: auto;
