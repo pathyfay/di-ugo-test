@@ -2,13 +2,13 @@ import OrderComponent from '../components/OrderComponent';
 
 const CustomersPage = ({orderList}) => {
     const orders = orderList.map(
-        ({orderId, productId, quantity, price, currency, city}) => ({
+        ({orderId, productId, quantity, price, currency, date}) => ({
             purchaseIdentifier: orderId ?? '',
             productId: productId ?? '',
             quantity: quantity ?? '',
             price: price ?? '',
             currency: currency ?? '',
-            city: city ?? ''
+            date: date ?? ''
         })
     );
     return (

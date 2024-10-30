@@ -31,14 +31,22 @@ body {
   padding: 0.5rem;
   margin: auto;
   display: block;
-  min-width: 320px;
-  min-height: 100vh;
+  /*min-width: 320px;*/
+  /*min-height: 100vh;*/
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
+.app-min-height{
+  min-height: 60vh;
+}
+
+ .app-width-100 {
+   width: 100%;
+ }
 
 .dark, .light, .dracula, .aqua, .synthwave, .cupcake, .pastel, .retro {
   width: 90%;
