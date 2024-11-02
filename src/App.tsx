@@ -58,7 +58,6 @@ const App = () => {
 
                     localStorage.setItem(cacheKey, JSON.stringify({customers: aCustomer, orders: orderSort}));
                     localStorage.setItem(cacheTimeKey, Date.now().toString());
-
                 } else {
                     console.warn("La propriété hydra:member est manquante dans response.data");
                 }
@@ -95,12 +94,12 @@ const App = () => {
     }, []);
 
     return (
-        <div className="p-2" data-theme={theme}>
-            <div className="mockup-browser border-base-300 border py-5">
+        <div className="flex items-center p-2" data-theme={theme}>
+            <div className="app-width-100 mockup-browser border-base-300 border py-5">
                 <h1 className="ml-3 text-indigo-600 p-5 align-middle">Di-UGO-Test </h1>
                 <div className="glass bg-opacity-90 border-gray-500 flex-grow p-2">
                     <ToolbarComponent theme={theme} toggleTheme={setTheme}/>
-                    <div className= "justify-center py-8 app-min-height">
+                    <div className= "flex items-center justify-center py-8 app-min-height">
                         {error ? (
                             <span className="badge badge-error size-4 w-full py-20 text-blue-100 font-bold">
                             <FontAwesomeIcon icon={faExclamationTriangle} className="h-5 mr-1 size-4"/>
@@ -109,7 +108,7 @@ const App = () => {
                         ) : loading ? (
                             <span className="flex items-center justify-center h-full loading loading-spinner text-primary px-36 bg-primary"></span>
                         ) : (
-                            <div className="m-10 px-4 py-2 h-full justify-center">
+                            <div className="m-10 px-4 py-2 app-width-100">
                                 <Router>
                                     <Routes>
                                         <Route path="/" element={<HomePage/>}/>
