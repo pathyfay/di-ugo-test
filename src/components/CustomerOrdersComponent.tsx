@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 import {OrderType} from "../model/OrderType.tsx";
-import {getCalculTotalOrders, getFormattedHeadersByLabel} from "../Utils.tsx";
+import { getFormattedHeadersByLabel} from "../Utils.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBackward} from "@fortawesome/free-solid-svg-icons/faBackward";
 import TableComponent from "./TableComponent.tsx";
@@ -91,7 +91,7 @@ const CustomerOrdersComponent = () => {
     }, [customerId]);
 
     return (
-        <div className="card bg-gray-600 text-blue-100">
+        <div className="bg-gray-600 text-blue-100">
             <div className="flex items-center justify-center py-8 app-min-height">
 
                 {error ? (
@@ -118,7 +118,7 @@ const CustomerOrdersComponent = () => {
                         </div>
                         <div className="justify-end py-5 pb-5">
                             <button
-                                className="btn btn-secondary mb-5 space-x-5 py-4 float-end"
+                                className="btn btn-secondary mb-5 space-x-5"
                                 onClick={() => navigate(`/customers`)}
                             >
                                 <FontAwesomeIcon icon={faBackward} className="w-5 h-5 mr-1"/>

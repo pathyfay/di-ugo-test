@@ -1,6 +1,8 @@
 import React, {useState} from "react";
-import {getCalculTotalOrders,isOrderTypeArray, toCamelCase} from "../Utils.tsx";
-import {useNavigate} from "react-router-dom";
+import {getCalculTotalOrders, isOrderTypeArray, toCamelCase} from "../Utils.tsx";
+import {AgGridReact} from 'ag-grid-react';
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 
 type TableComponentProps = {
     headers: string[];
@@ -19,69 +21,62 @@ const TableComponent: React.FC<TableComponentProps> = ({headers, datas, isIndex,
     if (isOrderTypeArray(datas)) {
         totalOrders = getCalculTotalOrders(datas);
     }
+    const CustomButtonComponent = (props) => {
+        console.log(props);
+        const action = props.data.actions && props.data.actions[0];
+        return action ? (
+            <button className={action.className} onClick={action.action}>
+                {action.btnLabel}
+            </button>
+        ) : null;
+    };
+
+    const newHeaders = headers.map(header => {
+        if (header.toLowerCase() === 'actions') {
+            return {field: "actions", flex: 2, cellRenderer: CustomButtonComponent}
+        } else if (header.toLowerCase() === 'price') {
+            return {
+                field: 'price',
+                headerName: 'Price',
+                flex: 1,
+                valueFormatter: (params) => {
+                    if (params.node.rowPinned) {
+                        let totalString = totalOrders.dollars ? '$: ' + totalOrders.dollars + ' / ' : '';
+                        totalString += totalOrders.euros ? ' $: ' + totalOrders.euros : '';
+                        return totalString;
+                    }
+                    const currency = params.data.currency ?? 'euros';
+                    return (currency === 'dollars') ? '$ ' + params.value : '€ ' + params.value;
+                }
+            }
+        } else {
+            return {field: toCamelCase(header.toLowerCase()), editable: true, cellEditor: 'agSelectCellEditor', flex: 1}
+        }
+    });
+
+    const [rowData, setRowData] = useState(datas);
+    const [colDefs, setColDefs] = useState(newHeaders);
+    const pagination = true;
+    const paginationPageSize = 500;
+    const paginationPageSizeSelector = [200, 500, 1000];
+    const totalRow = {
+        purchaseIdentifier: 'Total',
+        price: 0,
+        currency: 'Dollars / Euros'
+    };
 
     return (
-        <table className="table table-xs bordered rounded-md border-collapse border border-slate-400">
-            <thead>
-            <tr>
-                {isIndex && (<th className="border border-slate-300 text-blue-100">#</th>)}
-                {headers.map((header, index) => (
-                    <th className="border border-slate-300 text-blue-100"
-                        key={index}>{header.replace('_', ' ').toUpperCase()}</th>
-                ))}
-            </tr>
-            </thead>
-            <tbody>
-
-            {datas.map((data, rowIndex) => (
-                <tr key={rowIndex}>
-                    {isIndex && (
-                        <td key={rowIndex}>{rowIndex + 1}</td>
-                    )}
-                    {headers.map((header, colIndex) => {
-                        if (header === 'Actions') {
-                            return (
-                                <td className="border border-slate-300 text-amber-50" key={colIndex}>
-                                    {data.actions && data.actions.map((action, actionIndex) => (
-                                        <button
-                                            key={actionIndex}
-                                            className={action.className}
-                                            onClick={action.action}
-                                        >
-                                            {action.btnLabel}
-                                            {data.idClick}
-                                        </button>
-                                    ))}
-                                </td>
-                            );
-                        } else {
-                            return (
-                                <td className="border border-slate-300 text-amber-50" key={colIndex}>
-                                    {data[toCamelCase(header)] || ''}
-                                </td>
-                            );
-                        }
-                    })}
-                </tr>
-            ))}
-
-
-            {isTotal && (
-                <tr key="total-row">
-                    <td className="border border-slate-300">Total :</td>
-                    <td colSpan={headers.length} className="border border-slate-300 justify-center">
-                        {totalOrders && Object.entries(totalOrders).length > 0 ? (Object.entries(totalOrders).map(([currency, total]) => (
-                            <span className="text-amber-50 font-bold" key={currency.toUpperCase()}>
-                                    {currency.toUpperCase()}: {total.toFixed(2)}<br/>
-                            </span>
-                        ))) : (
-                            <span className="text-amber-50 font-bold">0</span>
-                        )}
-                    </td>
-                </tr>
-            )}
-            </tbody>
-        </table>
+        <div className="ag-theme-quartz-dark" style={{height: 500}}>
+            <AgGridReact
+                rowData={rowData}
+                columnDefs={colDefs}
+                pagination={pagination}
+                paginationPageSize={paginationPageSize}
+                paginationPageSizeSelector={paginationPageSizeSelector}
+                pinnedBottomRowData={[totalRow]}
+                domLayout="autoHeight"
+            />
+        </div>
     );
 }
 

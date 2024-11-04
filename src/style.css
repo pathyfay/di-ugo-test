@@ -31,12 +31,10 @@ body {
   padding: 0.5rem;
   margin: auto;
   display: block;
-  /*min-width: 320px;*/
-  /*min-height: 100vh;*/
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 1.2rem;
   line-height: 1.1;
 }
 
@@ -77,11 +75,20 @@ h1 {
 }
 
 .card {
-  padding: 2em;
+  padding: 1rem;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+.btn {
+  display: inline-flex;
+  height: unset;
+  min-height: unset;
+  flex-shrink: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
 }
 
 button {
@@ -103,6 +110,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.grid-container {
+  width: 100%; /* Ou une largeur fixe comme 800px */
+  overflow-x: auto; /* Permet le défilement horizontal */
+}
+
+.ag-theme-alpine {
+  height: 400px;
+  width: 100%;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -115,3 +132,10 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@media (max-width: 768px) {
+  .ag-theme-alpine {
+    font-size: 12px; /* Réduire la taille de la police sur les petits écrans */
+  }
+}
+

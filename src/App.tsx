@@ -108,7 +108,7 @@ const App = () => {
                         ) : loading ? (
                             <span className="flex items-center justify-center h-full loading loading-spinner text-primary px-36 bg-primary"></span>
                         ) : (
-                            <div className="m-10 px-4 py-2 app-width-100">
+                            <div className="app-width-100">
                                 <Router>
                                     <Routes>
                                         <Route path="/" element={<HomePage/>}/>

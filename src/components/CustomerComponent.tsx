@@ -15,7 +15,7 @@ const CustomerComponent: React.FC<CustomerComponentProps> = ({customers}) => {
     const actions = (customerId) => [
         {
             'btnLabel': 'Show Orders',
-            'className': 'btn btn-primary m-1 space-x-5 w-full max-w-xs py-4 float-end',
+            'className': 'btn btn-primary m-1 bordered',
             'action': () => navigate(`/customers/${customerId}/orders`)
         }
     ];
@@ -25,7 +25,7 @@ const CustomerComponent: React.FC<CustomerComponentProps> = ({customers}) => {
     }));
 
     return (
-        <div className="card bg-gray-600 text-blue-100">
+        <div className="bg-gray-600 text-blue-100">
             <h2 className="font-bold underline m-3 px-5 py-1 card-title">Liste des Clients</h2>
             <div className="overflow-x-auto">
                 <TableComponent headers={headers} datas={newCustomers} isIndex={true} isAction={true} isTotal={false}/>
