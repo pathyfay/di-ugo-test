@@ -1,22 +1,13 @@
 import OrderComponent from '../components/OrderComponent';
+import { OrderInterface } from '../Interface/OrderInterface';
 
-const CustomersPage = ({orderList}) => {
-    const orders = orderList.map(
-        ({orderId, productId, quantity, price, currency, date}) => ({
-            purchaseIdentifier: orderId ?? '',
-            productId: productId ?? '',
-            quantity: quantity ?? '',
-            price: price ?? '',
-            currency: currency ?? '',
-            date: date ?? ''
-        })
-    );
+const OrdersPage = (props: { orderList: OrderInterface[]; }) => {
     return (
         <div className="card bg-gray-600 text-blue-100">
             <h1>Gestion des Clients et Commandes</h1>
-            <OrderComponent orders={orders} />
+            <OrderComponent orders={props.orderList}/>
         </div>
     );
 };
 
-export default CustomersPage;
+export default OrdersPage;

@@ -2,9 +2,9 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHome, faUser} from "@fortawesome/free-solid-svg-icons";
 
 
-const ToolbarComponent = ({theme, toggleTheme}) => {
+const ToolbarComponent = (props: {theme: string, toggleTheme: any}) => {
     const handleChangeTheme = (event: { currentTarget: { value: any; }; }) => {
-        toggleTheme(event.currentTarget.value);
+        props.toggleTheme(event.currentTarget.value);
     };
 
     return (
@@ -30,7 +30,7 @@ const ToolbarComponent = ({theme, toggleTheme}) => {
                         </a>
                     </li>
                 </ul>
-                <select className="select select-bordered w-full max-w-xs m-2" name="theme" defaultValue={theme}
+                <select className="select select-bordered w-full max-w-xs m-2" name="theme" defaultValue={props.theme}
                         onChange={handleChangeTheme}>
                     <option value="light">Light</option>
                     <option value="dark">Dark</option>

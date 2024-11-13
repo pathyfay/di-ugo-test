@@ -1,25 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
-import {OrderType} from "../model/OrderType.tsx";
-import { getFormattedHeadersByLabel} from "../Utils.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBackward} from "@fortawesome/free-solid-svg-icons/faBackward";
 import TableComponent from "./TableComponent.tsx";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
-
-let customer = {};
-let headers: any[] = [];
+import {CustomerInterface} from "../Interface/CustomerInterface.tsx";
 
 const CustomerOrdersComponent = () => {
     const {customerId} = useParams();
-    const [orders, setOrders] = useState<OrderType[]>([]);
+    let [customerOrders, setCustomerOrders] = useState<CustomerInterface[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const cacheKey = "apiCustomer_id_" + `${customerId}`;
-    const cacheTimeKey = "apiCustomer_timestamp_id_" + `${customerId}`;
+    const cacheKey = "Customer_id_" + `${customerId}`;
+    const cacheTimeKey = "Customer_timestamp_id_" + `${customerId}`;
     const cacheExpiry = 20 * 60 * 1000;
 
     useEffect(() => {
@@ -27,39 +23,41 @@ const CustomerOrdersComponent = () => {
             setLoading(true);
             try {
                 const response = await axios.get(`http://localhost:8080/api/customers/${customerId}/orders`);
-                if (response.data["hydra:member"][0]) {
-                    customer = {
-                        title: response.data["hydra:member"][0].title,
-                        customerId: response.data["hydra:member"][0].customer_id,
-                        lastname: response.data["hydra:member"][0].lastname,
-                        firstname: response.data["hydra:member"].firstname,
-                        postalCode: response.data["hydra:member"][0].postal_code,
-                        city: response.data["hydra:member"][0].city,
-                        email: response.data["hydra:member"][0].email
+                if (response.data) {
+                    let newCustomerOrders: CustomerInterface = {
+                        title: response.data.title ?? '',
+                        customerId: response.data.customer_id ?? '',
+                        lastname: response.data.lastname ?? '',
+                        firstname: response.data.firstname ?? '',
+                        postalCode: response.data.postal_code ?? '',
+                        city: response.data.city ?? '',
+                        email: response.data.email ?? '',
+                        mobile: response.data.mobile ?? '',
+                        birthday: response.data.birthday ?? '',
+                        photo: response.data.photo ?? '',
+                        orders: []
                     }
-                    const customerOrders = response.data["hydra:member"][0].orders.map(
-                        ({orderId, productId, quantity, price, currency, date}) => ({
-                            purchaseIdentifier: orderId ?? '',
-                            productId: productId ?? '',
-                            quantity: quantity ?? '',
-                            price: price ?? '',
-                            currency: currency ?? '',
-                            date: date ?? '',
+
+                    newCustomerOrders.orders = response.data.orders.map(
+                        (order: any) => ({
+                            orderDate: order.order_date ?? '',
+                            productId: order.product_id ?? '',
+                            quantity: order.quantity ?? '',
+                            price: order.price ?? '',
+                            currency: order.currency ?? '',
+                            date: order.date ?? ''
                         })
                     );
-                    headers = getFormattedHeadersByLabel(customerOrders, "id");
-                    setOrders(customerOrders);
 
-                    localStorage.setItem(cacheKey, JSON.stringify({
-                        customerOrders: customerOrders,
-                        customer: customer
-                    }));
+                    // @ts-ignore
+                    setCustomerOrders(newCustomerOrders);
+                    localStorage.setItem(cacheKey, JSON.stringify({customerOrders: newCustomerOrders}));
                     localStorage.setItem(cacheTimeKey, Date.now().toString());
                 } else {
                     console.warn("La propriété hydra:member est manquante dans response.data");
                 }
-            } catch (e) {
-                setError(e?.message || 'Erreur lors du chargement des données');
+            } catch (e: unknown) {
+                setError('Erreur lors du chargement des données');
             } finally {
                 setLoading(false);
             }
@@ -74,9 +72,8 @@ const CustomerOrdersComponent = () => {
 
                 if (now - cacheTime < cacheExpiry) {
                     const parsedData = JSON.parse(cachedData);
-                    setOrders(parsedData.customerOrders);
-                    customer = parsedData.customer;
-                    headers = getFormattedHeadersByLabel(parsedData.customerOrders, "id");
+                    setCustomerOrders(parsedData.customerOrders);
+                    customerOrders = parsedData.customerOrders;
                     setLoading(false);
                     return;
                 }
@@ -86,7 +83,7 @@ const CustomerOrdersComponent = () => {
         };
         checkCacheAndFetch();
         const intervalId = setInterval(checkCacheAndFetch, cacheExpiry);
-
+       
         return () => clearInterval(intervalId);
     }, [customerId]);
 
@@ -111,9 +108,9 @@ const CustomerOrdersComponent = () => {
                                 </h2>
                             </div>
                             <ul className="justify-start list-disc">
-                                <li>Nom: {customer.title}{" "}{customer.firstname}{" "}{customer.lastname}</li>
-                                <li>Email : {customer.email}</li>
-                                <li>Adresse : {customer.postalCode}{" "}{customer.city}</li>
+                                <li>Nom: {customerOrders.title}{" "}{customerOrders.firstname}{" "}{customerOrders.lastname}</li>
+                                <li>Email : {customerOrders.email}</li>
+                                <li>Adresse : {customerOrders.postalCode}{" "}{customerOrders.city}</li>
                             </ul>
                         </div>
                         <div className="justify-end py-5 pb-5">
@@ -126,7 +123,7 @@ const CustomerOrdersComponent = () => {
                             </button>
                         </div>
 
-                        <TableComponent headers={headers} datas={orders} isIndex={true} isAction={false} isTotal={true}/>
+                        <TableComponent arrayData={customerOrders.orders} isTotal={true}/>
                     </div>
                 )}
             </div>

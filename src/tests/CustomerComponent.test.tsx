@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import {CustomerType} from "../model/CustomerType.tsx";
 import CustomerComponent from "../components/CustomerComponent.tsx";
+import {CustomerInterface} from "../Interface/CustomerInterface.tsx";
 
-const mockCustomers: CustomerType[] = [
+const mockCustomers: CustomerInterface[] = [
     {
         title: 'Mr.',
         customerId: 1,
@@ -12,7 +12,11 @@ const mockCustomers: CustomerType[] = [
         firstname: 'John',
         postalCode: '12345',
         city: 'Somewhere',
-        email: 'john.doe@example.com'
+        email: 'john.doe@example.com',
+        mobile: '',
+        birthday: '',
+        photo: '',
+        orders: []
     },
     {
         title: 'Ms.',
@@ -21,7 +25,11 @@ const mockCustomers: CustomerType[] = [
         firstname: 'Jane',
         postalCode: '67890',
         city: 'Anywhere',
-        email: 'jane.smith@example.com'
+        email: 'jane.smith@example.com',
+        mobile: '',
+        birthday: '',
+        photo: '',
+        orders: []
     }
 ];
 

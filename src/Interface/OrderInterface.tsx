@@ -1,6 +1,6 @@
-export interface OrderType {
+export interface OrderInterface {
     id: number;
-    purchaseIdentifier: string,
+    orderDate: string,
     productId: number,
     quantity: number,
     price: number,

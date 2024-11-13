@@ -105,14 +105,15 @@ button {
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
 .grid-container {
-  width: 100%; /* Ou une largeur fixe comme 800px */
-  overflow-x: auto; /* Permet le défilement horizontal */
+  width: 100%;
+  overflow-x: auto;
 }
 
 .ag-theme-alpine {
@@ -135,7 +136,7 @@ button:focus-visible {
 
 @media (max-width: 768px) {
   .ag-theme-alpine {
-    font-size: 12px; /* Réduire la taille de la police sur les petits écrans */
+    font-size: 12px;
   }
 }
 

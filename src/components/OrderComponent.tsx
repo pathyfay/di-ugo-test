@@ -1,19 +1,16 @@
 import React from 'react';
-import {OrderType} from "../model/OrderType.tsx";
-import {getFormattedHeadersByLabel} from "../Utils.tsx";
 import TableComponent from "./TableComponent.tsx";
+import {OrderInterface} from "../Interface/OrderInterface.tsx";
 
 type OrderComponentProps = {
-    orders: OrderType[];
+    orders: OrderInterface[];
 };
 const OrderComponent: React.FC<OrderComponentProps> = ({orders}) => {
-    const headers = getFormattedHeadersByLabel(orders,"id");
-
     return (
         <div className="bg-gray-600 text-blue-100">
             <h2 className="font-bold underline m-3 px-5 py-1 card-title">Liste des Orders</h2>
             <div className="overflow-x-auto">
-                <TableComponent headers={headers} datas={orders} isIndex={true} isAction={false} isTotal={false}/>
+                <TableComponent arrayData={orders} isTotal={false}/>
             </div>
         </div>
     );
