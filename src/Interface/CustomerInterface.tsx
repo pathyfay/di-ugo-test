@@ -2,7 +2,7 @@ import {OrderInterface} from "./OrderInterface.tsx";
 
 export interface CustomerInterface {
     title: string,
-    customerId: number;
+    id: number;
     lastname: string,
     firstname: string,
     postalCode: string,

@@ -8,10 +8,10 @@ type TableComponentProps = {
     arrayData: any[],
     isTotal: boolean
 };
-const TableComponent: React.FC<TableComponentProps> = ({arrayData , isTotal}) => {
+const TableComponent: React.FC<TableComponentProps> = ({arrayData, isTotal}) => {
     let totalOrders: any = {};
     let headers: string[] = [];
-    if (arrayData.length > 0){
+    if (arrayData.length > 0) {
         headers = Object.keys(arrayData[0]);
         headers = getFormattedHeadersByLabel([arrayData[0]], "id");
     }
@@ -27,43 +27,70 @@ const TableComponent: React.FC<TableComponentProps> = ({arrayData , isTotal}) =>
     }
 
     const CustomButtonComponent = (props: { data: { actions: any[]; }; }) => {
-        const action = props.data.actions && props.data.actions[0];
-        return action ? (
-            <button className={action.className} onClick={action.action}>
-                {action.btnLabel}
-            </button>
-        ) : null;
+        if (Array.isArray(props.data.actions) && props.data.actions.length > 0) {
+            return (
+                <div>
+                    {props.data.actions.map((action, index) => (
+                        <button
+                            key={index}
+                            className={action.className}
+                            onClick={action.action}>
+                            {action.btnLabel}
+                        </button>
+                    ))}
+                </div>
+            );
+        }
     };
 
     const newHeaders = headers.map(header => {
         if (header.toLowerCase() === 'actions') {
-            return {field: "actions", headerName:"Actions", flex: 2, cellRenderer: CustomButtonComponent}
+            return {
+                field: "actions",
+                headerName: "Actions",
+                flex: 2,
+                cellRenderer: CustomButtonComponent
+            };
         } else if (header.toLowerCase() === 'price') {
             return {
                 field: 'price',
                 headerName: 'price',
                 flex: 2,
-                valueFormatter: (params: { node: { rowPinned: any; }; data: { currency: string; }; value: string; }) => {
+                valueFormatter: (params: {
+                    node: { rowPinned: any; };
+                    data: { currency: string; };
+                    value: any;
+                }) => {
                     if (params.node.rowPinned) {
                         let totalString = totalOrders.dollars ? '$: ' + totalOrders.dollars + ' / ' : '';
                         totalString += totalOrders.euros ? ' €: ' + totalOrders.euros : '';
                         return totalString;
                     }
                     const currency = params.data.currency ?? 'euros';
-                    return (currency === 'dollars') ? '$ ' + params.value : '€ ' + params.value;
+                    const value = params.value || 0;
+                    return (currency === 'dollars') ? '$ ' + value : '€ ' + value;
                 }
             }
         } else {
-            return {field: toCamelCase(header.toLowerCase()), headerName: toCamelCase(header.toLowerCase()), flex: 1}
+            return {
+                field: toCamelCase(header.toLowerCase()),
+                headerName: toCamelCase(header.toLowerCase()),
+                flex: 1,
+                valueFormatter: (params: { value: any }) => {
+                    if (typeof params.value === 'object') {
+                        return JSON.stringify(params.value);
+                    }
+                    return params.value || '';
+                }
+            }
         }
     });
 
     const [rowData] = useState(arrayData);
-    const colDefs = useMemo(() => newHeaders, [headers]);
+    const colDefs = useMemo(() => newHeaders, [arrayData]);
     const pagination = true;
     const paginationPageSize = 20;
     const paginationPageSizeSelector = [5, 10, 20, 50, 100];
-
 
     return (
         <div className="ag-theme-quartz-dark" style={{height: 500}}>

@@ -11,6 +11,7 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {CustomerInterface} from "./Interface/CustomerInterface.tsx";
 import {OrderInterface} from "./Interface/OrderInterface.tsx";
+import CustomerForm from "./form/CustomerForm.tsx";
 
 const App = () => {
     const [theme, setTheme,] = useState("light");
@@ -30,11 +31,11 @@ const App = () => {
                 const response = await axios.get('http://localhost:8080/api/customers');
                 if (response.data) {
                     let aOrders: any[] = [];
-                    let customers = response.data.map((customer: any) =>{
-                        aOrders = [ ...aOrders, ...customer.orders];
+                    let customers = response.data.map((customer: any) => {
+                        aOrders = [...aOrders, ...customer.orders];
                         return {
                             title: customer?.title ?? '',
-                            customerId: customer?.customer_id ?? 0,
+                            id: customer?.id ?? 0,
                             lastname: customer?.lastname ?? '',
                             firstname: customer?.firstname ?? '',
                             postalCode: customer?.postal_code ?? customer?.postalCode ?? '',
@@ -44,14 +45,15 @@ const App = () => {
                             birthday: customer?.birthday ?? '',
                             photo: customer?.photo ?? '',
                             orders: customer?.orders ?? [],
-                        }});
+                        }
+                    });
                     const orders = aOrders.sort((a, b) => a.id - b.id).map((order: any) => {
-                        return(
+                        return (
                             {
                                 id: order.id,
                                 orderDate: order.order_date,
-                                productId: order.product_id  ?? 0,
-                                quantity: order.quantity  ?? 0,
+                                productId: order.product_id ?? 0,
+                                quantity: order.quantity ?? 0,
                                 price: order.price ?? 0,
                                 currency: order.currency ?? '',
                                 date: order.date ?? ''
@@ -69,6 +71,7 @@ const App = () => {
             } catch (e: unknown) {
                 error = 'Erreur lors du chargement des données';
                 setError(error);
+                setCustomerList([]);
             } finally {
                 setLoading(false);
             }
@@ -106,21 +109,24 @@ const App = () => {
                 <div className="glass bg-opacity-90 border-gray-500 flex-grow p-2">
                     <ToolbarComponent theme={theme} toggleTheme={setTheme}/>
                     <div className="flex items-center justify-center py-8 app-min-height">
-                        {error ? (
-                            <span className="badge badge-error size-4 w-full py-20 text-blue-100 font-bold">
-                            <FontAwesomeIcon icon={faExclamationTriangle} className="h-5 mr-1 size-4"/>
-                                {error}
-                            </span>
-                        ) : loading ? (
+                        {loading ? (
                             <span
                                 className="flex items-center justify-center h-full loading loading-spinner text-primary px-36 bg-primary"></span>
                         ) : (
                             <div className="app-width-100">
+                                {error ? (
+                                    <div className="badge badge-error size-4 w-full py-20 mb-5 text-blue-100 font-bold">
+                                        <FontAwesomeIcon icon={faExclamationTriangle} className="h-5 mr-1 size-4"/>{error}
+                                    </div>
+                                ) : '' }
                                 <Router>
                                     <Routes>
                                         <Route path="/" element={<HomePage/>}/>
-                                        <Route path="/customers" element={<CustomersPage customerList={customerList}/>}/>
-                                        <Route path="/customers/:customerId/orders"
+                                        <Route path="/customers"
+                                               element={<CustomersPage customerList={customerList}/>}/>
+                                        <Route path="/customers/new" element={<CustomerForm />} />
+                                        <Route path="/customers/:id/edit" element={<CustomerForm />} />
+                                        <Route path="/customers/:id/orders"
                                                element={<CustomerOrdersComponent/>}/>
                                         <Route path="/orders" element={<OrdersPage orderList={orderList}/>}/>
                                     </Routes>

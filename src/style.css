@@ -22,6 +22,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -41,6 +42,14 @@ h1 {
 .app-min-height{
   min-height: 60vh;
 }
+
+ .app-width-50 {
+   width: 45%;
+   margin: 0.5rem;
+   padding: 0.5rem;
+   min-height: 10vh;
+   border: solid 2px;
+ }
 
  .app-width-100 {
    width: 100%;
@@ -67,9 +76,11 @@ h1 {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.vanilla:hover {
   filter: drop-shadow(0 0 2em #3178c6aa);
 }

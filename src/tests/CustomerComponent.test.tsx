@@ -7,7 +7,7 @@ import {CustomerInterface} from "../Interface/CustomerInterface.tsx";
 const mockCustomers: CustomerInterface[] = [
     {
         title: 'Mr.',
-        customerId: 1,
+        id: 1,
         lastname: 'Doe',
         firstname: 'John',
         postalCode: '12345',
@@ -20,7 +20,7 @@ const mockCustomers: CustomerInterface[] = [
     },
     {
         title: 'Ms.',
-        customerId: 2,
+        id: 2,
         lastname: 'Smith',
         firstname: 'Jane',
         postalCode: '67890',
