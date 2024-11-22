@@ -4,6 +4,8 @@ import {useNavigate} from "react-router-dom";
 import {CustomerInterface} from "../Interface/CustomerInterface.tsx";
 import axios from "axios";
 import ShowPopupComponent from "./ShowPopupComponent.tsx";
+import {useQueryClient} from "@tanstack/react-query";
+import {RefetchCustomers} from "./refetchCustomers.tsx";
 
 type CustomerComponentProps = {
     customers: CustomerInterface[];
@@ -17,30 +19,30 @@ const CustomerComponent: React.FC<CustomerComponentProps> = ({customers}) => {
     const [showPopup, setShowPopup] = useState(false);
     let typeMessage = 'error';
     let newCustomer: any[] = [];
-    let config = {
-        headers: {
-            'Content-Type': 'application/ld+json',
-            'Accept': 'application/ld+json',
-        }
-    }
     const handleNewUpdateCustomerClick = (id: number | null) => {
         id === null ? navigate("/customers/new") : navigate(`/customers/${id}/edit`);
     };
-
+    const queryClient = useQueryClient();
     async function deleteCustomer(id: number) {
         setLoading(true);
         try {
-            const response = await axios.delete(`${url}/${id}/delete`,
-                config
+            const response = await axios.delete(`${url}/${id}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/ld+json',
+                        'Accept': 'application/ld+json',
+                    }
+                }
             );
 
-            if (response.data?.status === 200) {
-                localStorage.removeItem('apiCustomers');
-                localStorage.removeItem('apiCustomersTimestamp');
+            if (response.status === 200 || response.status === 204) {
                 setPopupMessage(`Succès de la suppression du client ${id}.`);
                 typeMessage = 'succes';
                 setShowPopup(true);
-                window.location.href = window.location.protocol + '//' + window.location.host + '/customers';
+                RefetchCustomers();
+                setTimeout((() => {
+                    window.location.href = window.location.protocol + '//' + window.location.host + '/customers';
+                }),1000)
             } else {
                 console.log('Error Customer deleted :', response.data);
             }

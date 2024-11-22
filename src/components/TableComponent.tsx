@@ -55,7 +55,7 @@ const TableComponent: React.FC<TableComponentProps> = ({arrayData, isTotal}) => 
             return {
                 field: 'price',
                 headerName: 'price',
-                flex: 2,
+                flex: 1,
                 valueFormatter: (params: {
                     node: { rowPinned: any; };
                     data: { currency: string; };

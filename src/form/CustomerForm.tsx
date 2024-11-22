@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {CustomerInterface} from "../Interface/CustomerInterface.tsx";
 import axios from "axios";
 import {useParams} from "react-router-dom";
+import {RefetchCustomers} from "../components/refetchCustomers.tsx";
 
 const CustomerForm: React.FC = () => {
     const url = "http://localhost:8080/api/customers";
@@ -66,7 +67,6 @@ const CustomerForm: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Customer data submitted:", customer)
         const formData = new FormData();
         formData.append("title", customer.title);
         formData.append("lastname", customer.lastname);
@@ -84,14 +84,14 @@ const CustomerForm: React.FC = () => {
             const response = id ? await axios.put(url+`/${id}/edit`, formData)
                 : await axios.post(url+'/new', formData);
 
-            if (response.data?.status === 200 || response.status === 201) {
-                localStorage.removeItem('apiCustomers');
-                localStorage.removeItem('apiCustomersTimestamp');
-                window.location.href = window.location.protocol + '//' + window.location.host + '/customers';
+            if (response.status === 200 || response.status === 201) {
+                RefetchCustomers();
+                setTimeout((() => {
+                    window.location.href = window.location.protocol + '//' + window.location.host + '/customers';
+                }),1000)
             } else {
                 console.log('Error Customer Updated :', response.data);
             }
-            return response.data;
         } catch (error) {
             console.log(`Erreur lors de l'update du client.`);
         }
